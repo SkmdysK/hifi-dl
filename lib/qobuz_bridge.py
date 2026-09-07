@@ -175,7 +175,7 @@ def download(url, directory, quality, *extra_args):
     env = dict(os.environ)
     pylibs = os.path.join(PROJECT, "pylibs")
     env["PYTHONPATH"] = pylibs + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
-    cmd = [sys.executable, "-m", "qobuz_dl.cli", "dl", "-d", directory, "-q", quality, *extra_args, url]
+    cmd = [sys.executable, "-m", "qobuz_dl.cli", "dl", "--no-db", "-d", directory, "-q", quality, *extra_args, url]
     return subprocess.run(cmd, cwd=PROJECT, check=False, env=env).returncode
 
 
