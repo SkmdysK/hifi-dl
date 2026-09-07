@@ -16,6 +16,24 @@
 
 ---
 
+## 📦 版本下载
+
+前往 [Releases](https://github.com/SkmdysK/hifi-dl/releases) 下载对应平台的最新版本：
+
+| 版本 | 文件 | 说明 |
+|---|---|---|
+| **macOS** | `HiFi-DL-mac-arm64-1.0.0.dmg` | 适用于 Apple Silicon（M1 – M4）；打开 dmg，将 App 拖入「Applications」即可 |
+| **Windows** | `HiFi-DL-win-x64-1.0.0.zip` | 适用于 Windows 10/11 x64；解压后双击 `HiFi-DL.exe`，免安装绿色版 |
+| **网页版（源码）** | `HiFi-DL-web-1.0.0.zip` | 适合想以网页方式运行或二次开发的用户；解压后执行 `node server.js` 启动 |
+
+> [!TIP]
+> - 三个版本界面与功能完全一致，各自数据相互独立、互不影响。
+> - macOS / Windows 版内置 Node 运行时，**无需安装 Node.js**；仅 Qobuz 功能需要系统安装 Python 3.10+。
+> - 应用未做代码签名：**macOS** 首次打开请右键 → 打开；**Windows** 遇到 SmartScreen 提示请选择「更多信息 → 仍要运行」。
+> - 也可以直接克隆本仓库源码运行：`node server.js`（需 Node.js ≥ 20）。
+
+---
+
 ## ✨ 功能特性
 
 ### 我的歌单

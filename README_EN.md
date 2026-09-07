@@ -16,6 +16,24 @@ A local, journal-style batch music downloader: LX multi-source aggregated search
 
 ---
 
+## 📦 Downloads
+
+Grab the latest build for your platform from the [Releases](https://github.com/SkmdysK/hifi-dl/releases) page:
+
+| Version | File | Notes |
+|---|---|---|
+| **macOS** | `HiFi-DL-mac-arm64-1.0.0.dmg` | For Apple Silicon (M1 – M4). Open the dmg and drag the app into Applications |
+| **Windows** | `HiFi-DL-win-x64-1.0.0.zip` | For Windows 10/11 x64. Extract and double-click `HiFi-DL.exe` — no installation needed |
+| **Web (source)** | `HiFi-DL-web-1.0.0.zip` | Run it as a local web app or hack on the source: extract and run `node server.js` |
+
+> [!TIP]
+> - All three versions share the same UI and features; their data is stored independently.
+> - The macOS / Windows builds bundle the Node runtime — **no Node.js required**. Only the Qobuz features need Python 3.10+ on your system.
+> - The binaries are unsigned: on **macOS**, right-click → Open on first launch; on **Windows**, choose "More info → Run anyway" when SmartScreen pops up.
+> - Prefer running from source? Clone this repo and start with `node server.js` (Node.js ≥ 20).
+
+---
+
 ## ✨ Features
 
 ### My Playlist
