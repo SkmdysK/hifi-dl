@@ -1,14 +1,13 @@
 @echo off
-chcp 65001 >nul
-rem ä¸€é”®åœæ­¢ LX Music æ‰¹é‡ä¸‹è½½å™¨ï¼ˆWindows ç‰ˆï¼ŒåŒå‡»è¿è¡Œï¼‰
+rem Ò»¼üÍ£Ö¹ LX Music ÅúÁ¿ÏÂÔØÆ÷£¨Windows °æ£¬Ë«»÷ÔËÐÐ£©
 set found=0
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8978" ^| findstr "LISTENING"') do (
   taskkill /f /pid %%a >nul 2>&1
   set found=1
 )
 if %found%==1 (
-  echo æœåŠ¡å·²åœæ­¢
+  echo ·þÎñÒÑÍ£Ö¹
 ) else (
-  echo æœåŠ¡æœªåœ¨è¿è¡Œ
+  echo ·þÎñÎ´ÔÚÔËÐÐ
 )
 timeout /t 2 >nul

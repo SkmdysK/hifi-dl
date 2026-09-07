@@ -1,18 +1,17 @@
 @echo off
-chcp 65001 >nul
-rem ä¸€é”®å¯åŠ¨ LX Music æ‰¹é‡ä¸‹è½½å™¨ï¼ˆWindows ç‰ˆï¼ŒåŒå‡»è¿è¡Œï¼‰
+rem Ò»¼üÆô¶¯ LX Music ÅúÁ¿ÏÂÔØÆ÷£¨Windows °æ£¬Ë«»÷ÔËÐÐ£©
 cd /d "%~dp0"
 
-rem Qobuz ä¸‹è½½æ¨¡å—å†…ç½®åœ¨ vendor\qobuz-dlï¼ˆæ³¨æ„ï¼šè¯¥ Python çŽ¯å¢ƒæ˜¯ macOS ç‰ˆï¼ŒWindows éœ€è‡ªå»ºçŽ¯å¢ƒåŽè®¾ç½® QOBUZ_DL_DIRï¼‰
+rem Qobuz ÏÂÔØÄ£¿éÄÚÖÃÔÚ vendor\qobuz-dl£¨×¢Òâ£º¸Ã Python »·¾³ÊÇ macOS °æ£¬Windows Ðè×Ô½¨»·¾³ºóÉèÖÃ QOBUZ_DL_DIR£©
 if exist "vendor\qobuz-dl\env" set "QOBUZ_DL_DIR=%~dp0vendor\qobuz-dl"
 
 curl -s -m 2 http://127.0.0.1:8978/api/settings >nul 2>&1
 if %errorlevel%==0 (
-  echo æœåŠ¡å·²åœ¨è¿è¡Œï¼Œç›´æŽ¥æ‰“å¼€ç•Œé¢...
+  echo ·þÎñÒÑÔÚÔËÐÐ£¬Ö±½Ó´ò¿ª½çÃæ...
   start http://127.0.0.1:8978
 ) else (
-  start "LX Music ä¸‹è½½å™¨" /min cmd /c "node server.js"
-  echo æœåŠ¡å·²å¯åŠ¨ï¼Œæµè§ˆå™¨å°†è‡ªåŠ¨æ‰“å¼€ http://127.0.0.1:8978
-  echo å…³é—­å¼¹å‡ºçš„æœåŠ¡çª—å£ä¼šåœæ­¢æœåŠ¡ï¼›åœæ­¢è¯·è¿è¡Œ åœæ­¢.bat
+  start "LX Music ÏÂÔØÆ÷" /min cmd /c "node server.js"
+  echo ·þÎñÒÑÆô¶¯£¬ä¯ÀÀÆ÷½«×Ô¶¯´ò¿ª http://127.0.0.1:8978
+  echo ¹Ø±Õµ¯³öµÄ·þÎñ´°¿Ú»áÍ£Ö¹·þÎñ£»Í£Ö¹ÇëÔËÐÐ Í£Ö¹.bat
 )
 timeout /t 3 >nul
