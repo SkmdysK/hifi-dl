@@ -132,6 +132,12 @@ def login():
     # 用户主动点登录时强制走 OAuth 浏览器流程:
     # 已存在旧 token 时 Client 会直接复用而跳过浏览器, 先把它移开, 登录失败再还原
     bak = TOKEN + ".hifidl-bak"
+    # 自愈: 上次登录被强杀中断时, 新 token 未生成, 先还原备份
+    try:
+        if not os.path.isfile(TOKEN) and os.path.isfile(bak):
+            shutil.move(bak, TOKEN)
+    except Exception:
+        pass
     had_token = False
     try:
         had_token = os.path.isfile(TOKEN)
