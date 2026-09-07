@@ -22,7 +22,7 @@ Grab the latest build for your platform from the [Releases](https://github.com/S
 
 | Version | File | Notes |
 |---|---|---|
-| **macOS** | `HiFi-DL-mac-arm64-1.0.0.dmg` | For Apple Silicon (M1 – M4). Open the dmg and drag the app into Applications |
+| **macOS** | `HiFi-DL-mac-arm64-1.0.0.dmg` | For Apple Silicon Macs. Open the dmg and drag the app into Applications |
 | **Windows** | `HiFi-DL-win-x64-1.0.0.zip` | For Windows 10/11 x64. Extract and double-click `HiFi-DL.exe` — no installation needed |
 | **Web (source)** | `HiFi-DL-web-1.0.0.zip` | Run it as a local web app or hack on the source: extract and run `node server.js` |
 
