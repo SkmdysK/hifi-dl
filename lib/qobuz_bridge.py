@@ -112,9 +112,56 @@ def search(artist, title):
 
 def login():
     # qobuz-dl's existing OAuth implementation opens the browser and owns the callback server.
+    # 桌面(Electron)版: 桥接进程只把 OAuth URL 写入临时文件, 由主进程打开系统浏览器;
+    # 网页版: 仍由 Python 直接调起系统浏览器。
+    import tempfile
+
+    if os.environ.get("HIFIDL_DESKTOP"):
+        def _write_login_url(url, new=0, autoraise=True):
+            try:
+                with open(os.path.join(tempfile.gettempdir(), "hifidl-login.url"), "w", encoding="utf-8") as f:
+                    f.write(url)
+            except Exception:
+                pass
+            return True
+
+        webbrowser.open = _write_login_url
+
     from qobuz_dl import qopy
     c = cfg()
-    qopy.Client(c["app_id"], c["secrets"].split(","), c["private_key"], TOKEN)
+    # 用户主动点登录时强制走 OAuth 浏览器流程:
+    # 已存在旧 token 时 Client 会直接复用而跳过浏览器, 先把它移开, 登录失败再还原
+    bak = TOKEN + ".hifidl-bak"
+    had_token = False
+    try:
+        had_token = os.path.isfile(TOKEN)
+        if had_token:
+            shutil.move(TOKEN, bak)
+    except Exception:
+        pass
+    try:
+        client = qopy.Client(c["app_id"], c["secrets"].split(","), c["private_key"], TOKEN)
+        try:
+            uat = getattr(client, "uat", None)
+            if uat and not os.path.isfile(TOKEN):
+                os.makedirs(os.path.dirname(TOKEN), exist_ok=True)
+                with open(TOKEN, "w", encoding="utf-8") as f:
+                    f.write(uat)
+            if os.path.isfile(bak):
+                os.remove(bak)
+        except Exception:
+            pass
+    finally:
+        if had_token and not os.path.isfile(TOKEN):
+            try:
+                shutil.move(bak, TOKEN)
+            except Exception:
+                pass
+        elif os.path.isfile(bak):
+            try:
+                os.remove(bak)
+            except Exception:
+                pass
 
 
 def download(url, directory, quality, *extra_args):
