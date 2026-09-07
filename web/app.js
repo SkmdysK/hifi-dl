@@ -910,11 +910,34 @@ async function refreshQobuzStatus() {
   }
 }
 
+let qobuzLoginWatchTimer = null
+function startQobuzLoginWatch() {
+  if (qobuzLoginWatchTimer) return
+  const started = Date.now()
+  qobuzLoginWatchTimer = setInterval(async () => {
+    try {
+      const status = await api('/api/qobuz/status')
+      if (status.available && status.loggedIn) {
+        clearInterval(qobuzLoginWatchTimer)
+        qobuzLoginWatchTimer = null
+        refreshQobuzStatus()
+        toast(t('qz.statusOk'))
+        return
+      }
+      if (Date.now() - started > 200000) {
+        clearInterval(qobuzLoginWatchTimer)
+        qobuzLoginWatchTimer = null
+        refreshQobuzStatus()
+      }
+    } catch (err) { /* 网络波动时继续轮询 */ }
+  }, 2500)
+}
+
 $('#qobuz-login').addEventListener('click', async () => {
   try {
     await api('/api/qobuz/login', { body: {} })
     toast(t('qz.loginToast'))
-    setTimeout(refreshQobuzStatus, 3000)
+    startQobuzLoginWatch()
   } catch (err) { toast(t('qz.loginFail', { msg: err.message }), true) }
 })
 
