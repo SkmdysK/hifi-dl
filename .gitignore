@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+server.log
+report.json
+cache/upload_*
+cache/download-history.jsonl
+cache/saved-playlist.json
+cache/playlists/
+__pycache__/
+cache/scripts/

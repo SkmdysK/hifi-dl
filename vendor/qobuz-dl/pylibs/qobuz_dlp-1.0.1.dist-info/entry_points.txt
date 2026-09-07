@@ -1,0 +1,3 @@
+[console_scripts]
+qobuz-dlp=qobuz_dl.cli:main
+

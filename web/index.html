@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fdfbf7">
+  <title>HiFi-DL</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="paper-scribble paper-scribble-one" aria-hidden="true">♪</div>
+  <div class="paper-scribble paper-scribble-two" aria-hidden="true">✦</div>
+
+  <header class="site-header">
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true">hi</div>
+      <div>
+        <div class="brand-kicker" data-i18n="hdr.tagline">把喜欢的歌，收进自己的文件夹</div>
+      </div>
+    </div>
+    <div class="header-note">LOCAL MUSIC DESK <span>✎</span></div>
+    <button id="exit-btn" class="exit-btn" data-i18n-title="hdr.exit"><span>×</span> <span data-i18n="hdr.exit">退出服务</span></button>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="主要导航">
+      <div class="sidebar-label" data-i18n="side.today">今天要做什么？</div>
+      <nav class="main-nav">
+        <button class="tab active" data-tab="playlist"><span class="nav-icon">♫</span><span data-i18n="nav.playlist">我的歌单</span></button>
+        <button class="tab" data-tab="downloading"><span class="nav-icon">↓</span><span data-i18n="nav.downloading">下载中</span><span id="downloading-badge" class="badge hidden">0</span></button>
+        <button class="tab" data-tab="search"><span class="nav-icon">⌕</span><span data-i18n="nav.search">LX 搜索</span></button>
+        <button class="tab" data-tab="qobuz"><span class="nav-icon">Q</span><span data-i18n="nav.qobuz">Qobuz 搜索</span></button>
+        <button class="tab" data-tab="failed"><span class="nav-icon">!</span><span data-i18n="nav.failed">需要重试</span><span id="failed-badge" class="badge hidden">0</span></button>
+        <button class="tab" data-tab="history"><span class="nav-icon">≡</span><span data-i18n="nav.history">下载记录</span></button>
+        <button class="tab" data-tab="settings"><span class="nav-icon">⚙</span><span data-i18n="nav.settings">下载设置</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mini-note" data-i18n="side.tip">小提醒</div>
+        <p data-i18n="side.tipText">先设置好音乐源和保存位置，再开始你的下载清单。</p>
+        <div class="sidebar-line"></div>
+        <div class="hand-sign">made for<br>your ears ♡</div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section id="tab-playlist" class="tab-page active">
+        <div class="page-heading tilt-left">
+          <span class="eyebrow">01 / PLAYLIST</span>
+          <h1><span data-i18n="pl.title">把歌单搬回家</span><span class="red-mark">!</span></h1>
+          <p data-i18n="pl.desc">贴上链接，或者把导出的歌单拖进来。</p>
+        </div>
+        <div id="saved-playlists-card" class="saved-playlists-card hidden">
+          <div class="saved-head">
+            <span class="card-kicker" data-i18n="pl.savedKicker">已保存的歌单</span>
+            <span id="saved-playlists-count" class="muted"></span>
+          </div>
+          <div id="saved-playlist-list" class="saved-grid"></div>
+        </div>
+
+        <div class="import-layout">
+          <div class="card import-card" id="import-card" data-decoration="tape">
+            <div class="tape" aria-hidden="true"></div>
+            <div class="card-kicker" data-i18n="pl.step1">第一步 · 贴上你的歌单</div>
+            <div class="url-line">
+              <span class="field-prefix">↳</span>
+              <input type="url" id="playlist-url" data-i18n-placeholder="pl.urlPh" placeholder="酷狗 / 网易云 / QQ 音乐 / Apple Music 链接">
+              <button id="parse-url" class="btn primary" data-i18n="pl.parse">解析链接 <span>→</span></button>
+            </div>
+            <div class="or-divider"><span data-i18n="pl.or">或者</span></div>
+            <div id="drop-zone" class="drop-zone">
+              <div class="drop-icon">▧</div>
+              <div><strong data-i18n="pl.dropTitle">拖一份 .txt 歌单到这里</strong><br><span data-i18n="pl.dropSub">Apple Music 导出的文本也可以</span></div>
+              <button id="pick-file" class="btn secondary" data-i18n="pl.pickFile">选择文件</button>
+              <input type="file" id="file-input" accept=".txt,text/plain" hidden>
+            </div>
+            <div id="parse-result" class="result-line" data-i18n="pl.empty">还没有歌单，先从上面开始吧。</div>
+          </div>
+          <div class="tip-note tilt-right">
+            <span class="pin" aria-hidden="true"></span>
+            <div class="note-title" data-i18n="pl.noteTitle">小纸条</div>
+            <p data-i18n="pl.note">公开歌单才能被读取。一次导入后，就可以挑选喜欢的歌。</p>
+            <div class="note-arrow">↙</div>
+          </div>
+        </div>
+
+        <div class="card list-card hidden" id="list-card" data-decoration="tack">
+          <div class="tack" aria-hidden="true"></div>
+          <div class="list-head">
+            <div><div class="card-kicker" data-i18n="pl.step2">第二步 · 检查清单</div><span id="song-count" class="muted" data-i18n="pl.count">共 0 首</span></div>
+            <div class="toolbar-btns">
+              <button id="select-all" class="btn small" data-i18n="pl.all">全选</button>
+              <button id="select-invert" class="btn small" data-i18n="pl.invert">反选</button>
+              <button id="select-none" class="btn small" data-i18n="pl.none">清空</button>
+              <button id="download-btn" class="btn primary" data-i18n="pl.download">↓ 下载选中</button>
+              <button id="save-playlist" class="btn small" data-i18n="pl.save">保存歌单</button>
+            </div>
+          </div>
+          <div id="progress-bar-wrap" class="progress-wrap hidden"><div id="progress-bar"><div id="progress-fill"></div></div><div id="progress-text" class="muted"></div></div>
+          <ul id="song-list" class="song-list"></ul>
+        </div>
+      </section>
+
+      <section id="tab-downloading" class="tab-page">
+        <div class="page-heading tilt-right"><span class="eyebrow">02 / DOWNLOADS</span><h1><span data-i18n="dl.title">正在落地的歌</span><span class="red-mark">.</span></h1><p data-i18n="dl.desc">看着进度条慢慢走完。每一首都会被放进你设定的文件夹。</p></div>
+        <div class="card" data-decoration="tape"><div class="tape" aria-hidden="true"></div><div class="list-head"><div><div class="card-kicker" data-i18n="dl.queue">下载队列</div><span id="dl-summary" class="muted" data-i18n="dl.empty">暂无下载任务</span></div><div class="toolbar-btns"><select id="dl-slot" class="slot-select"><option value="playlist" data-i18n="slot.playlist">歌单综合</option><option value="lx" data-i18n="slot.lx">LX 搜索</option><option value="qobuz" data-i18n="slot.qobuz">Qobuz 搜索</option></select><button id="dl-pause" class="btn secondary" disabled data-i18n="dl.pause">Ⅱ 暂停</button><button id="dl-resume" class="btn secondary hidden" disabled data-i18n="dl.resume">▶ 继续</button><button id="dl-cancel" class="btn danger" disabled data-i18n="dl.cancel">× 取消选中</button></div></div><div id="dl-progress-bar-wrap" class="progress-wrap hidden"><div id="dl-progress-bar"><div id="dl-progress-fill"></div></div></div><ul id="dl-list" class="song-list"></ul></div>
+      </section>
+
+      <section id="tab-search" class="tab-page">
+        <div class="page-heading tilt-left"><span class="eyebrow">03 / LX SEARCH</span></div>
+        <div class="card search-card" data-decoration="tack"><div class="tack" aria-hidden="true"></div><div class="card-kicker" data-i18n="kw.kicker">输入关键词</div><div class="search-row"><select id="search-source" class="slot-select"><option value="" data-i18n="kw.allChannels">所有通道</option><option value="kw" data-i18n="kw.kw">酷我</option><option value="kg" data-i18n="kw.kg">酷狗</option><option value="tx" data-i18n="kw.tx">QQ音乐</option><option value="wy" data-i18n="kw.wy">网易云</option><option value="mg" data-i18n="kw.mg">咪咕</option></select><input type="text" id="search-name" data-i18n-placeholder="kw.namePh" placeholder="歌名"><input type="text" id="search-artist" data-i18n-placeholder="kw.artistPh" placeholder="歌手"><button id="search-btn" class="btn primary" data-i18n="common.search">⌕ 搜索</button></div><div id="search-status" class="result-line"></div><ul id="search-results" class="song-list"></ul></div>
+      </section>
+
+      <section id="tab-qobuz" class="tab-page">
+        <div class="page-heading tilt-right"><span class="eyebrow">04 / QOBUZ SEARCH</span></div>
+        <div class="card import-card" id="qobuz-url-card" data-decoration="tape">
+          <div class="tape" aria-hidden="true"></div>
+          <div class="card-kicker" data-i18n="qz.linkKicker">Qobuz 链接</div>
+          <div class="url-line">
+            <span class="field-prefix">↳</span>
+            <textarea id="qobuz-url" rows="2" data-i18n-placeholder="qz.urlPh" placeholder="专辑 / 歌单 / 单曲 / 歌手 / 厂牌 / last.fm 歌单链接（每行一个）"></textarea>
+            <button id="qobuz-url-btn" class="btn primary" data-i18n="qz.join">加入队列 <span>→</span></button>
+          </div>
+          <div class="row">
+            <button id="qobuz-url-file-btn" class="btn small" data-i18n="qz.importFile">从 .txt 导入链接</button>
+            <input type="file" id="qobuz-url-file" accept=".txt,text/plain" hidden>
+            <span class="muted" data-i18n="qz.linkHint2">每行一个链接，也支持拖入 .txt 文件</span>
+          </div>
+          <div id="qobuz-url-status" class="result-line" data-i18n="qz.linkHint">支持 play.qobuz.com 的专辑、歌单、单曲、歌手、厂牌链接，以及 last.fm 歌单链接。</div>
+        </div>
+
+        <div class="card search-card" data-decoration="tack"><div class="tack" aria-hidden="true"></div><div class="card-kicker" data-i18n="qz.library">Qobuz 曲库</div><div class="search-row"><select id="qobuz-search-type" class="slot-select"><option value="track" data-i18n="qz.typeTrack">单曲</option><option value="album" data-i18n="qz.typeAlbum">专辑</option></select><input type="text" id="qobuz-search-name" data-i18n-placeholder="qz.namePh" placeholder="歌名"><input type="text" id="qobuz-search-artist" data-i18n-placeholder="qz.artistPh" placeholder="歌手"><button id="qobuz-search-btn" class="btn primary" data-i18n="common.search">⌕ 搜索</button></div><div id="qobuz-search-status" class="result-line"></div><ul id="qobuz-search-results" class="song-list"></ul></div>
+      </section>
+
+      <section id="tab-failed" class="tab-page">
+        <div class="page-heading tilt-right"><span class="eyebrow">05 / RETRY</span><h1><span data-i18n="fa.title">还有几首没找到</span><span class="red-mark">…</span></h1><p data-i18n="fa.desc">换个音源，或者稍后再试一次。失败不代表结束。</p></div>
+        <div class="card" data-decoration="tape"><div class="tape" aria-hidden="true"></div><div class="list-head"><div><div class="card-kicker" data-i18n="fa.queue">重试清单</div><span id="failed-count" class="muted" data-i18n="fa.empty">暂无失败记录</span></div><div class="toolbar-btns"><button id="retry-btn" class="btn primary" disabled data-i18n="fa.retry">↻ 重试失败歌曲</button><button id="clear-failed" class="btn small" data-i18n="common.clear">清空记录</button></div></div><ul id="failed-list" class="song-list"></ul></div>
+      </section>
+
+      <section id="tab-history" class="tab-page">
+        <div class="page-heading tilt-left"><span class="eyebrow">06 / HISTORY</span></div>
+        <div class="card" data-decoration="tack">
+          <div class="tack" aria-hidden="true"></div>
+          <div class="list-head">
+            <div><div class="card-kicker" data-i18n="hi.kicker">下载记录</div><span id="history-summary" class="muted" data-i18n="hi.empty">暂无记录</span></div>
+            <div class="toolbar-btns">
+              <select id="history-filter" class="slot-select"><option value="" data-i18n="hi.filterAll">全部</option><option value="lx">LX</option><option value="qobuz">Qobuz</option></select>
+              <button id="clear-history" class="btn small danger" data-i18n="common.clear">清空记录</button>
+            </div>
+          </div>
+          <ul id="history-list" class="song-list"></ul>
+        </div>
+      </section>
+
+      <section id="tab-settings" class="tab-page">
+        <div class="page-heading tilt-left"><span class="eyebrow">07 / SETTINGS</span><h1><span data-i18n="st.title">把下载习惯写下来</span><span class="red-mark">✎</span></h1><p data-i18n="st.desc">这些设置只保存在当前这台电脑上。</p></div>
+        <div class="settings-grid">
+          <div class="card settings-card" data-decoration="tape">
+            <div class="tape" aria-hidden="true"></div>
+            <div class="card-kicker" data-i18n="st.habit">下载习惯</div>
+            <div class="settings-row">
+              <div class="field wide">
+                <label for="out-dir" data-i18n="st.saveTo">保存到</label>
+                <div class="row">
+                  <input type="text" id="out-dir" placeholder="/Users/xxx/Documents/music">
+                  <button id="pick-folder" class="btn small" data-i18n="st.pickFolder">选择文件夹</button>
+                </div>
+              </div>
+              <div class="field">
+                <label data-i18n="st.priority">歌单综合下载优先</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="playlist-priority" value="lx" checked> <span data-i18n="st.priorityLx">LX 优先</span></label>
+                  <label><input type="radio" name="playlist-priority" value="qobuz"> <span data-i18n="st.priorityQz">Qobuz 优先</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label data-i18n="st.quality">音乐品质</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="quality" value="all" checked> <span data-i18n="st.qAll">都下载（优先无损）</span></label>
+                  <label><input type="radio" name="quality" value="lossless"> <span data-i18n="st.qLossless">仅无损</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="page-size" data-i18n="st.pageSize">列表显示最大数</label>
+                <div class="row">
+                  <select id="page-size" class="slot-select">
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="concurrency" data-i18n="st.concurrent">同时下载歌曲数</label>
+                <div class="row">
+                  <input type="number" id="concurrency" min="1" max="10" value="3">
+                  <span class="muted" data-i18n="st.concurrentHint">1 - 10 首并行</span>
+                </div>
+                <div class="radio-group" style="margin-top:9px">
+                  <label><input type="checkbox" id="history-enabled"> <span data-i18n="st.historyOn">记录下载历史（侧边栏可查看）</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="lang-select" data-i18n="st.lang">语言 / Language</label>
+                <select id="lang-select" class="slot-select">
+                  <option value="zh">中文</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <button id="save-settings" class="btn primary" data-i18n="st.save">保存设置</button>
+              <span id="settings-msg" class="muted"></span>
+            </div>
+          </div>
+          <div class="card lx-settings" data-decoration="tack">
+            <div class="tack" aria-hidden="true"></div>
+            <div class="card-kicker">LX Music</div>
+            <div class="field">
+              <label for="sources-text" data-i18n="lx.sources">音乐源</label>
+              <p class="muted" data-i18n="lx.sourcesHint">每行一个 LX Music 音源脚本 URL</p>
+              <textarea id="sources-text" rows="5" placeholder="https://raw.githubusercontent.com/.../latest.js"></textarea>
+              <div class="row">
+                <button id="import-sources" class="btn small" data-i18n="lx.import">从文件导入</button>
+                <input type="file" id="sources-file-input" accept=".txt,text/plain" hidden>
+                <button id="clear-sources" class="btn small danger" data-i18n="lx.clearSources">清空音乐源</button>
+                <button id="save-sources" class="btn primary" data-i18n="lx.saveSources">保存音乐源</button>
+                <span id="sources-msg" class="muted"></span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="lx-file-pattern" data-i18n="lx.pattern">文件命名模板</label>
+              <div class="row">
+                <input type="text" id="lx-file-pattern" data-i18n-placeholder="lx.patternPh" placeholder="{歌手} - {歌名}">
+                <span class="muted" data-i18n="lx.patternHint">支持 {歌手} {歌名} {专辑} {序号}</span>
+              </div>
+            </div>
+            <div class="field">
+              <label data-i18n="lx.enhance">下载增强</label>
+              <div class="radio-group">
+                <label><input type="checkbox" id="lx-group-by-list"> <span data-i18n="lx.group">按歌单名分组保存到子文件夹</span></label>
+                <label><input type="checkbox" id="lx-save-lrc"> <span data-i18n="lx.lrc">同时保存 .lrc 歌词文件</span></label>
+                <label><input type="checkbox" id="lx-embed-pic"> <span data-i18n="lx.embedPic">内嵌封面图到音频文件</span></label>
+                <label><input type="checkbox" id="lx-embed-lyric"> <span data-i18n="lx.embedLyric">内嵌歌词到音频文件</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="lx-proxy" data-i18n="lx.proxy">下载代理</label>
+              <div class="row">
+                <input type="text" id="lx-proxy" placeholder="http://127.0.0.1:7897">
+                <span class="muted" data-i18n="lx.proxyHint">留空直连</span>
+              </div>
+            </div>
+            <div class="row">
+              <button id="lx-save" class="btn primary" data-i18n="lx.save">保存 LX 设置</button>
+              <span id="lx-msg" class="muted"></span>
+            </div>
+          </div>
+          <div class="card qobuz-settings" data-decoration="tack">
+            <div class="tack" aria-hidden="true"></div>
+            <div class="card-kicker">Qobuz</div>
+            <p id="qobuz-login-status" class="muted" data-i18n="qz.statusChecking">正在检查登录状态…</p>
+            <div class="row">
+              <button id="qobuz-login" class="btn primary" data-i18n="qz.login">打开 Qobuz 登录</button>
+              <button id="qobuz-logout" class="btn secondary" data-i18n="qz.logout">退出登录</button>
+            </div>
+            <div class="field">
+              <label for="qobuz-quality" data-i18n="qz.quality">Qobuz 音质</label>
+              <select id="qobuz-quality" class="slot-select">
+                <option value="auto" data-i18n="qz.qualityAuto">自动（跟随音乐品质设置）</option>
+                <option value="27" data-i18n="qz.q27">Hi-Res 最高（24bit ≥96kHz）</option>
+                <option value="7" data-i18n="qz.q7">Hi-Res（24bit ≤96kHz）</option>
+                <option value="6" data-i18n="qz.q6">无损（16bit / 44.1kHz FLAC）</option>
+                <option value="5" data-i18n="qz.q5">MP3 320k</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="qobuz-save-layout" data-i18n="qz.layout">保存结构</label>
+              <select id="qobuz-save-layout" class="slot-select">
+                <option value="album" data-i18n="qz.layoutAlbum">专辑文件夹（每张专辑一个文件夹 + 封面）</option>
+                <option value="flat" data-i18n="qz.layoutFlat">不建专辑文件夹（全部平铺到下载目录）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="qobuz-track-name" data-i18n="qz.name">文件命名</label>
+              <select id="qobuz-track-name" class="slot-select">
+                <option value="default" data-i18n="qz.nameDefault">默认（曲号. 歌名）</option>
+                <option value="artist-title" data-i18n="qz.nameArtistTitle">歌手 - 歌名</option>
+                <option value="title" data-i18n="qz.nameTitle">歌名</option>
+              </select>
+            </div>
+            <div class="field">
+              <label data-i18n="qz.options">下载选项</label>
+              <div class="radio-group">
+                <label><input type="checkbox" id="qobuz-embed"> <span data-i18n="qz.embed">把专辑封面内嵌到每一首歌</span></label>
+                <label><input type="checkbox" id="qobuz-keep-cover"> <span data-i18n="qz.keepCover">在专辑文件夹里保留封面文件（cover.jpg）</span></label>
+                <label><input type="checkbox" id="qobuz-dedup"> <span data-i18n="qz.dedup">跳过已下载过的曲目（本地去重）</span></label>
+              </div>
+            </div>
+            <div class="row">
+              <button id="qobuz-save" class="btn primary" data-i18n="qz.save">保存 Qobuz 设置</button>
+              <span id="qobuz-msg" class="muted"></span>
+            </div>
+            <p class="muted qobuz-login-note" data-i18n="qz.note">登录在浏览器中完成，凭据保存在本机 qobuz-dl 的配置里。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button id="back-top" class="back-top hidden" data-i18n-title="common.backTop" aria-label="回到顶部">↑</button>
+  <div id="toast" class="hidden"></div>
+  <div id="exit-modal" class="modal hidden"><div class="modal-box"><div class="modal-title" data-i18n="modal.title">先等等</div><div class="modal-text" id="exit-modal-text" data-i18n="modal.confirm">确定要退出服务吗？</div><div class="modal-btns"><button id="exit-cancel" class="btn secondary" data-i18n="modal.cancel">取消</button><button id="exit-confirm" class="btn danger" data-i18n="modal.exit">退出服务</button></div></div></div>
+  <script src="/i18n.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

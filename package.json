@@ -1,0 +1,16 @@
+{
+  "name": "hifi-dl",
+  "version": "1.0.0",
+  "description": "Hifi 音乐批量下载器：LX 多音源聚合 + Qobuz 无损/Hi-Res，歌单解析、歌词封面内嵌",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node main.js",
+    "gui": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {}
+}
