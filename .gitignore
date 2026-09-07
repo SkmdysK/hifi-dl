@@ -8,3 +8,4 @@ cache/saved-playlist.json
 cache/playlists/
 __pycache__/
 cache/scripts/
+settings.json
