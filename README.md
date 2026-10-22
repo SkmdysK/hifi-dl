@@ -143,6 +143,11 @@ HiFi-DL/
 
 ## 📄 许可证
 
+本项目自有源码以 [MIT](LICENSE) 授权；`vendor/` 下的第三方组件保留其上游协议（qobuz-dl 为 **GPL-3.0**）。
+完整声明见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+
+> 注意：因为发布版打包了 `vendor/qobuz-dl/`（GPL-3.0），**任何包含该目录的发行包整体需按 GPL-3.0 分发**并提供对应源码。
+
 本项目基于上游开源项目开发，仅供学习交流。使用时请遵守你所在地区的法律法规及各上游项目的开源协议。
 
 <div align="center">
